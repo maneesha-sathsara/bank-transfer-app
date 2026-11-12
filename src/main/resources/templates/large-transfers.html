@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Large Transfers</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="topbar"><h1>Large Transfers</h1></header>
+<div class="container">
+    <p><a href="/">&larr; Back to Dashboard</a></p>
+    <div class="card">
+        <h2>Transfers of LKR <span th:text="${min}"></span> or more</h2>
+        <form th:action="@{/large-transfers}" method="get" class="search">
+            <input type="number" step="0.01" name="min" th:value="${min}">
+            <button type="submit">Filter</button>
+        </form>
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Time</th><th>From</th><th>To</th><th class="num">Amount</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${transactions}">
+                <td th:text="${t.id}"></td>
+                <td th:text="${#temporals.format(t.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${t.fromAccount}"></td>
+                <td th:text="${t.toAccount}"></td>
+                <td class="num" th:text="${#numbers.formatDecimal(t.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${t.description}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(transactions)}"><td colspan="6">No transfers found.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
