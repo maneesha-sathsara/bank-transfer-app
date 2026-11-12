@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Account History</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="topbar">
+    <h1>Account History</h1>
+</header>
+
+<div class="container">
+    <p><a href="/">&larr; Back to Dashboard</a></p>
+
+    <div class="card">
+        <h2>Account <span th:text="${accountNumber}"></span></h2>
+        <p th:if="${customer != null}">
+            <b th:text="${customer.fullName}"></b> &middot;
+            Balance: LKR <b th:text="${#numbers.formatDecimal(customer.balance, 1, 'COMMA', 2, 'POINT')}"></b>
+        </p>
+        <p th:if="${customer == null}" class="field-error">Account not found.</p>
+        <p>Total sent: LKR <b th:text="${#numbers.formatDecimal(totalSent, 1, 'COMMA', 2, 'POINT')}">0.00</b></p>
+
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Time</th><th>From</th><th>To</th><th class="num">Amount</th><th>Status</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${transactions}">
+                <td th:text="${t.id}"></td>
+                <td th:text="${#temporals.format(t.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${t.fromAccount}"></td>
+                <td th:text="${t.toAccount}"></td>
+                <td class="num" th:text="${#numbers.formatDecimal(t.amount, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td><span th:class="${t.status.name() == 'SUCCESS'} ? 'badge ok' : 'badge bad'" th:text="${t.status}"></span></td>
+                <td th:text="${t.description}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(transactions)}"><td colspan="7">No transactions for this account.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
